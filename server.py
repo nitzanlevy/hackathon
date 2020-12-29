@@ -6,6 +6,7 @@ import struct
 from socket import *
 from _thread import *
 
+in_game_mode = True
 threadLock = threading.Lock()
 TCP_PORT = 1033
 UDP_PORT = 13117
@@ -32,7 +33,7 @@ group2 = ''
 score1 = 0 
 score2 = 0
 def funClient(tcp_socket): 
-    global group1, group2, score1, score2, timer,threadLock
+    global group1, group2, score1, score2, timer,threadLock,in_game_mode
     print('client connected')
     client_name = tcp_socket.recv(1024).decode()
     rand = random.randint(1,2)
@@ -45,6 +46,7 @@ def funClient(tcp_socket):
         if timer==10:
             break
     game_start_message = "Welcome to Keyboard Spamming Battle Royale.\nGroup 1:\n==\n"+group1+"\nGroup 2:\n==\n"+group2+"\nStart pressing keys on your keyboard as fast as you can!!"
+    in_game_mode = False
     tcp_socket.send(game_start_message.encode())
 
     start = time.time()
@@ -66,7 +68,11 @@ def funClient(tcp_socket):
         winners_msg = "Game over!\nGroup 1 typed in "+ str(score1)+" characters.\nGroup 2 typed in "+ str(score2) +" characters.\nGroup 1 wins!\nCongratulations to the winners:\n==\n"+ group1
     else: 
         winners_msg = "Game over!\nGroup 1 typed in "+ str(score1)+" characters.\nGroup 2 typed in "+ str(score2) +" characters.\nGroup 2 wins!\nCongratulations to the winners:\n==\n"+ group2
-    tcp_socket.send(winners_msg.encode())
+    try:
+        tcp_socket.send(winners_msg.encode())
+    except:
+        pass
+    in_game_mode = True
     tcp_socket.close()
 
 def accept_socket ():
@@ -82,13 +88,21 @@ start_new_thread(accept_socket,())
 
 print('Server started, listening on IP address ' + LOCAL_IP)
 
-message = struct.pack('Ibh', 0xfeedbeef, 0x2, TCP_PORT)
-timer = 0
-for i in range(10,0,-1):
-    udp_socket.sendto(message, ('<broadcast>', UDP_PORT))
-    print("waiting for a client...")
-    time.sleep(1)
-timer = 10
+while True:
+    group1 = ''
+    group2 = ''
+    score1 = 0 
+    score2 = 0
+    if in_game_mode:
+        message = struct.pack('Ibh', 0xfeedbeef, 0x2, TCP_PORT)
+        timer = 0
+        for i in range(10,0,-1):
+            udp_socket.sendto(message, ('<broadcast>', UDP_PORT))
+            print("waiting for a client...")
+            time.sleep(1)
+        timer = 10
 
-while True : 
-    time.sleep(1)
+        for i in range(10,0,-1):
+            print('game over in', str(i), 'sec')
+            time.sleep(1)
+        print("Game over, sending out offer requests...")
