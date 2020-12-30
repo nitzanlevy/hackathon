@@ -85,13 +85,12 @@ while True:
             print(server_msg)
             break   
         except:
-            pass     
-        c=getch()
-        if c != None:
-            try:
-                tcp_socket.sendall(c)
-            except:
-                break
+            c=getch()
+            if c != None:
+                try:
+                    tcp_socket.sendall(c)
+                except:
+                    break     
             
     crash()
     
