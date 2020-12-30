@@ -9,7 +9,7 @@ from _thread import *
 threads = []   
 in_game_mode = False
 threadLock = threading.Lock()
-TCP_PORT = 1033
+TCP_PORT = 2013
 UDP_PORT = 13117
 LOCAL_IP = '192.168.1.43'
 # SO_REUSEPORT = SO_REUSEADDR
