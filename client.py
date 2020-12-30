@@ -3,11 +3,21 @@ import os
 import time
 from myGetch import getch
 from socket import *
+import sys
 # from scapy.arch import get_if_addr
+
+HEADER = '\033[95m'
+BLUE = '\033[94m'
+GREEN = '\033[92m'
+RED = '\033[93m'
+sys.stdout.write(HEADER)
+
 
 def crash():
     tcp_socket.close()
+    sys.stdout.write(RED)
     print("Server disconnected, listening for offer requests...")
+    sys.stdout.write(HEADER)
 
 # CLIENT_IP = get_if_addr('eth1') 
 LISTEN_PORT = 13117
@@ -40,7 +50,9 @@ while True:
             if (temp_magic == Magic_cookie and temp_type == 0x2):
                 break
         except:
+            sys.stdout.write(RED)
             print('incorrect data')
+            sys.stdout.write(HEADER)
             continue
 
     TCP_IP = addr[0]
@@ -73,7 +85,9 @@ while True:
         #Game mode
         server_msg = tcp_socket.recv(1024).decode()
         #print welcome message
+        sys.stdout.write(BLUE)
         print(server_msg)
+        sys.stdout.write(HEADER)
 
         server_msg = None
         tcp_socket.setblocking(False)
@@ -85,16 +99,19 @@ while True:
         try:
             server_msg = tcp_socket.recv(1024).decode()
             #print winners message
+            sys.stdout.write(GREEN)
             print(server_msg)
+            sys.stdout.write(HEADER)       
             break   
         except:
-            c=getch()
-            if c != None:
-                try:
-                    tcp_socket.sendall(c)
-                except:
-                    break     
-            
+            time.sleep(0.01)
+            pass   
+        c=getch()
+        if c != None:
+            try:
+                tcp_socket.sendall(c)
+            except:
+                break      
     crash()
     time.sleep(0.05)
     

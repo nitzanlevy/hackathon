@@ -4,9 +4,18 @@ from threading import Thread
 import threading
 import os
 import struct
+import sys
 # from scapy.arch import get_if_addr
 from socket import *
 from _thread import *
+
+
+HEADER = '\033[95m'
+BLUE = '\033[94m'
+GREEN = '\033[92m'
+RED = '\033[93m'
+sys.stdout.write(HEADER)
+
 threads = []   
 in_game_mode = False
 threadLock = threading.Lock()
@@ -36,7 +45,11 @@ score1 = 0
 score2 = 0
 def funClient(tcp_socket): 
     global group1, group2, score1, score2, timer,threadLock,in_game_mode
+    
+    sys.stdout.write(GREEN)
     print('client connected')
+    sys.stdout.write(HEADER)
+
     try:
         client_name = tcp_socket.recv(1024).decode()
     except:
@@ -117,11 +130,13 @@ while True:
             time.sleep(1)
         timer = 10
 
-
+        sys.stdout.write(BLUE)
         for i in range(10,0,-1):
             print('game over in', str(i), 'sec')
             time.sleep(1)
         
     for t in threads:
         t.join()
+    sys.stdout.write(GREEN)
     print("Game over, sending out offer requests...")
+    sys.stdout.write(HEADER)
