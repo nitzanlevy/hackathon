@@ -4,6 +4,7 @@ from threading import Thread
 import threading
 import os
 import struct
+from scapy.all import *
 from socket import *
 from _thread import *
 threads = []   
@@ -12,6 +13,7 @@ threadLock = threading.Lock()
 TCP_PORT = 2013
 UDP_PORT = 13117
 LOCAL_IP = '192.168.1.43'
+SERVER_IP =get_if_addr('eth1')
 # SO_REUSEPORT = SO_REUSEADDR
 # udp_socket.setsockopt(SOL_SOCKET, SO_REUSEPORT, 1)
 
@@ -23,7 +25,7 @@ udp_socket.setsockopt(SOL_SOCKET, SO_BROADCAST, 1)
 # Create a TCP socket
 tcp_socket = socket(AF_INET, SOCK_STREAM)
 # Binding to local port 1033
-tcp_socket.bind(('eth1', TCP_PORT))
+tcp_socket.bind(('SERVER_IP', TCP_PORT))
 # Listen for incoming connections
 tcp_socket.listen()
 
