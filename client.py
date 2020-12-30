@@ -14,9 +14,8 @@ LISTEN_PORT = 13117
 Magic_cookie = 0xfeedbeef
 group_name = "TCPP\n"
 
-print('Trying to Connect')
 #Looking for a server
-udp_socket = socket(AF_INET, SOCK_DGRAM,IPPROTO_UDP) # UDP
+udp_socket = socket(AF_INET, SOCK_DGRAM) # UDP
 # udp_socket.setsockopt(SOL_SOCKET, SO_BROADCAST, 1)
 while True:
     try:
