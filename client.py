@@ -3,13 +3,13 @@ import os
 import time
 from myGetch import getch
 from socket import *
-from scapy.arch import get_if_addr
+# from scapy.arch import get_if_addr
 
 def crash():
     tcp_socket.close()
     print("Server disconnected, listening for offer requests...")
 
-CLIENT_IP = get_if_addr('eth1') 
+# CLIENT_IP = get_if_addr('eth1') 
 LISTEN_PORT = 13117
 Magic_cookie = 0xfeedbeef
 group_name = "TCPP\n"
