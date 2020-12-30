@@ -1,12 +1,15 @@
 import struct
 import os
+import time
 from myGetch import getch
 from socket import *
+from scapy.arch import get_if_addr
 
 def crash():
     tcp_socket.close()
     print("Server disconnected, listening for offer requests...")
-    
+
+CLIENT_IP = get_if_addr('eth1') 
 LISTEN_PORT = 13117
 Magic_cookie = 0xfeedbeef
 group_name = "TCPP\n"
@@ -18,9 +21,10 @@ udp_socket.setsockopt(SOL_SOCKET, SO_BROADCAST, 1)
 while True:
     try:
         #bind until success
-        udp_socket.bind(('', LISTEN_PORT))
+        udp_socket.bind((CLIENT_IP, LISTEN_PORT))
         break
     except:
+        time.sleep(0.1)
         continue
 
 print('Client started, listening for offer requests...')
@@ -93,6 +97,7 @@ while True:
                     break     
             
     crash()
+    time.sleep(0.05)
     
 
 

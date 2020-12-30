@@ -4,7 +4,7 @@ from threading import Thread
 import threading
 import os
 import struct
-from scapy.all import *
+from scapy.arch import get_if_addr
 from socket import *
 from _thread import *
 threads = []   
