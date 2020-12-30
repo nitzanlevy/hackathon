@@ -23,7 +23,7 @@ udp_socket.setsockopt(SOL_SOCKET, SO_BROADCAST, 1)
 # Create a TCP socket
 tcp_socket = socket(AF_INET, SOCK_STREAM)
 # Binding to local port 1033
-tcp_socket.bind(('', TCP_PORT))
+tcp_socket.bind(('eth1', TCP_PORT))
 # Listen for incoming connections
 tcp_socket.listen()
 
