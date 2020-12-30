@@ -3,27 +3,41 @@ import os
 from myGetch import getch
 from socket import *
 
+def crash():
+    tcp_socket.close()
+    print("Server disconnected, listening for offer requests...")
+    
 LISTEN_PORT = 13117
 Magic_cookie = 0xfeedbeef
 group_name = "Pazim\n"
 
+
 #Looking for a server
 udp_socket = socket(AF_INET, SOCK_DGRAM) # UDP
 udp_socket.setsockopt(SOL_SOCKET, SO_BROADCAST, 1)
-try:
-    udp_socket.bind(('', LISTEN_PORT))
-except:
-    print('problem')
+while True:
+    try:
+        #bind until success
+        udp_socket.bind(('', LISTEN_PORT))
+        break
+    except:
+        continue
 
 print('Client started, listening for offer requests...')
 while True:
+    data, addr= None,None
+    #get offer from server until the data correct
     while True:
-        data, addr = udp_socket.recvfrom(1024)
-        unpack_data = struct.unpack('Ibh',data)
-        temp_magic=unpack_data[0]
-        temp_type=unpack_data[1]
-        if (temp_magic == Magic_cookie and temp_type == 0x2):
-            break
+        try:
+            data, addr = udp_socket.recvfrom(1024)
+            unpack_data = struct.unpack('Ibh',data)
+            temp_magic=unpack_data[0]
+            temp_type=unpack_data[1]
+            if (temp_magic == Magic_cookie and temp_type == 0x2):
+                break
+        except:
+            print('incorrect data')
+            continue
 
     TCP_IP = addr[0]
     TCP_PORT = unpack_data[2]
@@ -33,43 +47,57 @@ while True:
 
     #initiate TCP socket
     tcp_socket = socket(AF_INET, SOCK_STREAM)
-    server_address = (TCP_IP, TCP_PORT)
 
+    connected = False
     # Connecting to a server
     while True:
         try:
-            tcp_socket.connect(server_address)
+            tcp_socket.connect((TCP_IP, TCP_PORT))
+            connected=True
             break
         except:
-            pass
+            break
+    
+    if not connected:
+        crash()
+        continue
 
-    #send group name
-    tcp_socket.sendall(group_name.encode())
-
-    #Game mode
     try:
-        server_msg = tcp_socket.recv(1024)
-    except: 
-        pass #error
-    server_msg=server_msg.decode()
-    print(server_msg)
+        #send group name
+        tcp_socket.sendall(group_name.encode())
 
-    server_msg = None
-    tcp_socket.setblocking(False)
+        #Game mode
+        server_msg = tcp_socket.recv(1024).decode()
+        #print welcome message
+        print(server_msg)
+
+        server_msg = None
+        tcp_socket.setblocking(False)
+    except:
+        crash()
+        continue
+
     while True:
         try:
-            server_msg = tcp_socket.recv(1024)
+            server_msg = tcp_socket.recv(1024).decode()
+            #print winners message
+            print(server_msg)
             break   
         except:
             pass     
         c=getch()
         if c != None:
-            tcp_socket.sendall(c)
+            try:
+                tcp_socket.sendall(c)
+            except:
+                break
+            
+    crash()
+    
 
-    server_msg = server_msg.decode()
-    print(server_msg)
-    tcp_socket.close()
-    print("Server disconnected, listening for offer requests...")
+
+
+    
 
 
     
