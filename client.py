@@ -25,9 +25,10 @@ while True:
 
 print('Client started, listening for offer requests...')
 while True:
-    data, addr= None,None
+
     #get offer from server until the data correct
     while True:
+        data, addr= None,None
         try:
             data, addr = udp_socket.recvfrom(1024)
             unpack_data = struct.unpack('Ibh',data)

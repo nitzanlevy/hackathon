@@ -119,6 +119,6 @@ while True:
             print('game over in', str(i), 'sec')
             time.sleep(1)
         
-        for t in threads:
-            t.join()
-        print("Game over, sending out offer requests...")
+    for t in threads:
+        t.join()
+    print("Game over, sending out offer requests...")
