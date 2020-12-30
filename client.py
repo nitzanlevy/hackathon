@@ -17,7 +17,7 @@ group_name = "TCPP\n"
 
 #Looking for a server
 udp_socket = socket(AF_INET, SOCK_DGRAM) # UDP
-udp_socket.setsockopt(SOL_SOCKET, SO_BROADCAST, 1)
+# udp_socket.setsockopt(SOL_SOCKET, SO_BROADCAST, 1)
 while True:
     try:
         #bind until success
