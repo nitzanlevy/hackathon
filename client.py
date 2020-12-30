@@ -26,7 +26,7 @@ group_name = "TCPP\n"
 
 #Looking for a server
 udp_socket = socket(AF_INET, SOCK_DGRAM) # UDP
-# udp_socket.setsockopt(SOL_SOCKET, SO_BROADCAST, 1)
+udp_socket.setsockopt(SOL_SOCKET, SO_BROADCAST, 1)
 while True:
     try:
         #bind until success
@@ -53,6 +53,7 @@ while True:
             sys.stdout.write(RED)
             print('incorrect data')
             sys.stdout.write(HEADER)
+            time.sleep(0.1)
             continue
 
     TCP_IP = addr[0]
@@ -64,26 +65,22 @@ while True:
     #initiate TCP socket
     tcp_socket = socket(AF_INET, SOCK_STREAM)
 
-    connected = False
     # Connecting to a server
-    while True:
-        try:
-            tcp_socket.connect((TCP_IP, TCP_PORT))
-            connected=True
-            break
-        except:
-            break
-    
-    if not connected:
-        crash()
+    try:
+        tcp_socket.connect((TCP_IP, TCP_PORT))
+    except:
         continue
-
+    
     try:
         #send group name
         tcp_socket.sendall(group_name.encode())
 
         #Game mode
-        server_msg = tcp_socket.recv(1024).decode()
+        server_msg = tcp_socket.recv(1024)
+        if (not server_msg  or len(server_msg)==0):
+            crash()
+            continue
+        server_msg=server_msg.decode()
         #print welcome message
         sys.stdout.write(BLUE)
         print(server_msg)
