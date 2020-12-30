@@ -25,19 +25,29 @@ LOCAL_IP = '192.168.1.43'
 # SERVER_IP =get_if_addr('eth1')
 # SO_REUSEPORT = SO_REUSEADDR
 # udp_socket.setsockopt(SOL_SOCKET, SO_REUSEPORT, 1)
+print('debug1')
 
 # Create a UDP socket
 udp_socket = socket(AF_INET, SOCK_DGRAM)
+print('debug2')
+
 # Enable broadcasting mode
 udp_socket.setsockopt(SOL_SOCKET, SO_BROADCAST, 1)
+print('debug3')
+
 
 # Create a TCP socket
 tcp_socket = socket(AF_INET, SOCK_STREAM)
+print('debug4')
+
 # Binding to local port 1033
 tcp_socket.bind(('', TCP_PORT))
+print('debug5')
+
 # Listen for incoming connections
 tcp_socket.listen()
 
+print('debug6')
 
 group1 = ''
 group2 = ''
