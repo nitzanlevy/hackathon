@@ -18,7 +18,7 @@ udp_socket.setsockopt(SOL_SOCKET, SO_BROADCAST, 1)
 while True:
     try:
         #bind until success
-        udp_socket.bind(('', LISTEN_PORT))
+        udp_socket.bind((get_if_addr('eth1'), LISTEN_PORT))
         break
     except:
         continue
