@@ -52,6 +52,7 @@ def funClient(tcp_socket):
     while True:
         if timer==10:
             break
+        time.sleep(0.1)
     game_start_message = "Welcome to Keyboard Spamming Battle Royale.\nGroup 1:\n==\n"+group1+"\nGroup 2:\n==\n"+group2+"\nStart pressing keys on your keyboard as fast as you can!!"
     in_game_mode = True
     try:
