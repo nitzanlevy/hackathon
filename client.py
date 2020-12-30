@@ -9,7 +9,7 @@ def crash():
     
 LISTEN_PORT = 13117
 Magic_cookie = 0xfeedbeef
-group_name = "Pazim\n"
+group_name = "TCPP\n"
 
 
 #Looking for a server
