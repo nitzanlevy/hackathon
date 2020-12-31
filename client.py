@@ -9,6 +9,12 @@ HEADER = '\033[95m'
 BLUE = '\033[94m'
 GREEN = '\033[92m'
 RED = '\033[93m'
+
+LISTEN_PORT = 13117
+Magic_cookie = 0xfeedbeef
+group_name = "TCPP\n"
+BUFFER_SIZE = 1024
+
 sys.stdout.write(HEADER)
 
 #handle any case of disconnection with server
@@ -18,9 +24,6 @@ def crash():
     print("Server disconnected, listening for offer requests...")
     sys.stdout.write(HEADER)
 
-LISTEN_PORT = 13117
-Magic_cookie = 0xfeedbeef
-group_name = "TCPP\n"
 
 #Looking for a server
 udp_socket = socket(AF_INET, SOCK_DGRAM) # UDP
@@ -41,7 +44,7 @@ while True:
     while True:
         data, addr= None,None
         try:
-            data, addr = udp_socket.recvfrom(1024)
+            data, addr = udp_socket.recvfrom(BUFFER_SIZE)
             unpack_data = struct.unpack('Ibh',data)
             temp_magic=unpack_data[0]
             temp_type=unpack_data[1]
@@ -74,7 +77,7 @@ while True:
         tcp_socket.sendall(group_name.encode())
 
         #Game mode
-        server_msg = tcp_socket.recv(1024)
+        server_msg = tcp_socket.recv(BUFFER_SIZE)
         if (not server_msg  or len(server_msg)==0):
             crash()
             continue
@@ -92,7 +95,11 @@ while True:
 
     while True:
         try:
-            server_msg = tcp_socket.recv(1024).decode()
+            server_msg = tcp_socket.recv(BUFFER_SIZE)
+            if (not server_msg  or len(server_msg)==0):
+                crash()
+                continue
+            server_msg=server_msg.decode()
             #print winners message
             sys.stdout.write(GREEN)
             print(server_msg)

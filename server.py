@@ -21,7 +21,8 @@ threadLock = threading.Lock()
 TCP_PORT = 2013
 UDP_PORT = 13117
 LOCAL_IP = '192.168.1.43'
-
+BUFFER_SIZE = 1024
+TTL = 10
 group1 = ''
 group2 = ''
 score1 = 0 
@@ -50,7 +51,7 @@ def funClient(tcp_socket):
     
     #put the client in group1 or group2, randomly
     try:
-        client_name = tcp_socket.recv(1024).decode()
+        client_name = tcp_socket.recv(BUFFER_SIZE).decode()
     except:
         tcp_socket.close()
         return
@@ -63,7 +64,7 @@ def funClient(tcp_socket):
 
     #wait until 10 seconds pass since the server send requests
     while True:
-        if timer==10:
+        if timer==TTL:
             break
         time.sleep(0.1)
 
@@ -80,7 +81,7 @@ def funClient(tcp_socket):
 
     #game mode
     start = time.time()
-    while time.time()-start<10:
+    while time.time()-start<TTL:
         try:
             key = tcp_socket.recv(1)
             if key:
@@ -136,15 +137,15 @@ while True:
         #send requests
         message = struct.pack('Ibh', 0xfeedbeef, 0x2, TCP_PORT)
         timer = 0
-        for i in range(10,0,-1):
+        for i in range(TTL,0,-1):
             udp_socket.sendto(message, ('<broadcast>', UDP_PORT))
             print("waiting for a client...")
             time.sleep(1)
-        timer = 10
+        timer = TTL
 
         #in game mode
         sys.stdout.write(BLUE)
-        for i in range(10,0,-1):
+        for i in range(TTL,0,-1):
             print('game over in', str(i), 'sec')
             time.sleep(1)
 
