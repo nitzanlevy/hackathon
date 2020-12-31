@@ -11,7 +11,7 @@ GREEN = '\033[92m'
 RED = '\033[93m'
 sys.stdout.write(HEADER)
 
-
+#handle any case of disconnection with server
 def crash():
     tcp_socket.close()
     sys.stdout.write(RED)

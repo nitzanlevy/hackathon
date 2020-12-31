@@ -22,6 +22,11 @@ TCP_PORT = 2013
 UDP_PORT = 13117
 LOCAL_IP = '192.168.1.43'
 
+group1 = ''
+group2 = ''
+score1 = 0 
+score2 = 0
+
 # Create a UDP socket
 udp_socket = socket(AF_INET, SOCK_DGRAM)
 # Enable broadcasting mode
@@ -35,17 +40,15 @@ tcp_socket.bind(('', TCP_PORT))
 tcp_socket.listen()
 
 
-group1 = ''
-group2 = ''
-score1 = 0 
-score2 = 0
+#handle connection per client
 def funClient(tcp_socket): 
     global group1, group2, score1, score2, timer,threadLock,in_game_mode
     
     sys.stdout.write(GREEN)
     print('client connected')
     sys.stdout.write(HEADER)
-
+    
+    #put the client in group1 or group2, randomly
     try:
         client_name = tcp_socket.recv(1024).decode()
     except:
@@ -58,10 +61,13 @@ def funClient(tcp_socket):
     else:
         group2 = group2 + (client_name)
 
+    #wait until 10 seconds pass since the server send requests
     while True:
         if timer==10:
             break
         time.sleep(0.1)
+
+    #game start's message
     game_start_message = "Welcome to Keyboard Spamming Battle Royale.\nGroup 1:\n==\n"+group1+"\nGroup 2:\n==\n"+group2+"\nStart pressing keys on your keyboard as fast as you can!!"
     in_game_mode = True
     try:
@@ -72,6 +78,7 @@ def funClient(tcp_socket):
         tcp_socket.close()
         return
 
+    #game mode
     start = time.time()
     while time.time()-start<10:
         try:
@@ -84,7 +91,8 @@ def funClient(tcp_socket):
                         score2 += 1
         except:
             continue
-        
+
+    #calculate the winners    
     if score1>score2 : 
         winners_msg = "Game over!\nGroup 1 typed in "+ str(score1)+" characters. Group 2 typed in "+ str(score2) +" characters.\nGroup 1 wins!\nCongratulations to the winners:\n==\n"+ group1
     else: 
@@ -93,9 +101,13 @@ def funClient(tcp_socket):
         tcp_socket.send(winners_msg.encode())
     except:
         pass
+    
+    #game over , close the connection with the client
     in_game_mode = False
     tcp_socket.close()
 
+
+#thread for accepting new connections
 def accept_socket ():
     while True:
         try:
@@ -105,6 +117,8 @@ def accept_socket ():
             threads.append(t)
         except:
             continue
+
+
 
 #start the server
 start_new_thread(accept_socket,())
@@ -118,6 +132,8 @@ while True:
     score2 = 0
     timer = 0
     if not in_game_mode:
+
+        #send requests
         message = struct.pack('Ibh', 0xfeedbeef, 0x2, TCP_PORT)
         timer = 0
         for i in range(10,0,-1):
@@ -126,13 +142,17 @@ while True:
             time.sleep(1)
         timer = 10
 
+        #in game mode
         sys.stdout.write(BLUE)
         for i in range(10,0,-1):
             print('game over in', str(i), 'sec')
             time.sleep(1)
-        
+
+    #wait for all threads to finish    
     for t in threads:
         t.join()
     sys.stdout.write(GREEN)
+
+    #game over, repeat
     print("Game over, sending out offer requests...")
     sys.stdout.write(HEADER)
