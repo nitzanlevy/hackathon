@@ -8,12 +8,6 @@ import sys
 from socket import *
 from _thread import *
 
-def init():
-    timer = 0
-    group1 = ''
-    group2 = ''
-    score1 = 0 
-    score2 = 0
 
 HEADER = '\033[95m'
 BLUE = '\033[94m'
@@ -28,7 +22,10 @@ TCP_PORT = 2013
 UDP_PORT = 13117
 LOCAL_IP = '192.168.1.43'
 
-init()
+group1 = ''
+group2 = ''
+score1 = 0 
+score2 = 0
 
 # Create a UDP socket
 udp_socket = socket(AF_INET, SOCK_DGRAM)
@@ -129,7 +126,11 @@ start_new_thread(accept_socket,())
 print('Server started, listening on IP address ' + LOCAL_IP)
 
 while True:
-    init()
+    group1 = ''
+    group2 = ''
+    score1 = 0 
+    score2 = 0
+    timer = 0
     if not in_game_mode:
 
         #send requests
