@@ -5,7 +5,6 @@ import threading
 import os
 import struct
 import sys
-# from scapy.arch import get_if_addr
 from socket import *
 from _thread import *
 
@@ -22,9 +21,6 @@ threadLock = threading.Lock()
 TCP_PORT = 2013
 UDP_PORT = 13117
 LOCAL_IP = '192.168.1.43'
-# SERVER_IP =get_if_addr('eth1')
-# SO_REUSEPORT = SO_REUSEADDR
-# udp_socket.setsockopt(SOL_SOCKET, SO_REUSEPORT, 1)
 
 # Create a UDP socket
 udp_socket = socket(AF_INET, SOCK_DGRAM)

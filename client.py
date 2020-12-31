@@ -4,7 +4,6 @@ import time
 from myGetch import getch
 from socket import *
 import sys
-# from scapy.arch import get_if_addr
 
 HEADER = '\033[95m'
 BLUE = '\033[94m'
@@ -19,7 +18,6 @@ def crash():
     print("Server disconnected, listening for offer requests...")
     sys.stdout.write(HEADER)
 
-# CLIENT_IP = get_if_addr('eth1') 
 LISTEN_PORT = 13117
 Magic_cookie = 0xfeedbeef
 group_name = "TCPP\n"
